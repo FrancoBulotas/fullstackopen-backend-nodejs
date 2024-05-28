@@ -1,6 +1,7 @@
 
-
 const express = require('express')
+var morgan = require('morgan')
+ 
 const app = express()
 
 let persons = [
@@ -43,11 +44,24 @@ const getCurrentDate = () => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son indexados desde 0
     const day = String(date.getDate()).padStart(2, '0');
-    return  `${year}-${month}-${day}`;
+    const hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    if(parseInt(minutes)<10){
+      minutes = '0'+ minutes
+    }
+    if(parseInt(seconds)<10){
+      seconds = '0'+ seconds
+    }
+    return  `${year}-${month}-${day} // ${hours}:${minutes}:${seconds}`;
 }
 
+
 app.get('/info', (request, response) => {
-    response.send(`<p>Phonebook has info for ${persons.length} people</p><br/><p>${getCurrentDate()}</p>`)
+    response.send(`
+    <p>Phonebook has info for ${persons.length} people</p>
+    <p>${getCurrentDate()}</p>
+  `)
   })
 
 app.get('/', (request, response) => {
@@ -57,6 +71,9 @@ app.get('/', (request, response) => {
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
+app.get(`/api/persons/:id`, (request, response) => {
+  response.json(persons)  
+})
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
@@ -65,33 +82,55 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
+
 app.use(express.json())
+app.use(morgan(function (tokens, req, res) {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    JSON.stringify(req.body)
+  ].join(' ')
+}))
+
 const generateId = () => {
-    const maxId = persons.length > 0
-      ? Math.max(...persons.map(n => n.id))
-      : 0
-    return maxId + 1
+  const randomValue = Math.random()
+  if (randomValue !== 0){
+    return Math.floor(randomValue * 10000)
   }
+}
   
-// app.post('/api/persons', (request, response) => {
-//     const body = request.body
+app.post('/api/persons', (request, response) => {
+    const body = request.body
 
-//     if (!body.content) {
-//         return response.status(400).json({ 
-//         error: 'content missing' 
-//         })
-//     }
+    if (!body.name) {
+        return response.status(400).json({ 
+        error: 'name missing' 
+        })
+    }
+    if(persons.find(person => person.name === body.name)){
+      return response.status(400).json({ 
+        error: 'name already exists' 
+        })
+    }
+    if (!body.number) {
+      return response.status(400).json({ 
+      error: 'number missing' 
+      })
+    }
 
-//     const person = {
-//         name: ,
-//         number: ,
-//         id: generateId(),
-//     }
+    const person = {
+        id: generateId(),
+        name: body.name,
+        number: body.number
+    }
 
-//     persons = persons.concat(person)
+    persons = persons.concat(person)
 
-//     response.json(person)
-//     })
+    response.json(person)
+})
 
 const PORT = 3003
 app.listen(PORT, () => {

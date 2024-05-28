@@ -1,0 +1,16 @@
+GET http://localhost:3003/api/persons
+
+###
+DELETE http://localhost:3003/api/persons/4
+
+###
+GET http://localhost:3003/api/persons/8
+
+###
+POST http://localhost:3003/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Franco Bulotas",
+    "number": "4327849023849"
+}
