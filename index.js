@@ -1,8 +1,23 @@
 
 const express = require('express')
 var morgan = require('morgan')
- 
+const cors = require('cors')
+
 const app = express()
+
+app.use(express.json())
+app.use(express.static('dist'))
+app.use(morgan(function (tokens, req, res) {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    JSON.stringify(req.body)
+  ].join(' ')
+}))
+app.use(cors())
 
 let persons = [
     { 
@@ -82,19 +97,6 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-
-app.use(express.json())
-app.use(morgan(function (tokens, req, res) {
-  return [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms',
-    JSON.stringify(req.body)
-  ].join(' ')
-}))
-
 const generateId = () => {
   const randomValue = Math.random()
   if (randomValue !== 0){
@@ -132,7 +134,7 @@ app.post('/api/persons', (request, response) => {
     response.json(person)
 })
 
-const PORT = 3003
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
