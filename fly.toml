@@ -9,6 +9,7 @@ primary_region = 'gru'
 [build]
 
 [env]
+  MONGODB_URI="mongodb+srv://francobulotas:xTf5vCz6vsm0oVg7@fullstackopen-ftb.hotzxgx.mongodb.net/appPerson?retryWrites=true&w=majority&appName=fullstackopen-ftb"
   PORT = "3000" # add this
 
 [http_service]
