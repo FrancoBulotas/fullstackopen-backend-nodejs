@@ -8,14 +8,14 @@ POST http://localhost:3001/api/persons HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Franquiño",
-    "number": "4327849023849"
+    "name": "Lucas Rodriguez",
+    "number": "1923821938"
 }
 ###
-PUT http://localhost:3001/api/persons/66565ec98b0105b55507d8f8 HTTP/1.1
+PUT http://localhost:3001/api/persons/6656902405ee21f20546c4c2 HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Pepe",
+    "name": "pe",
     "number": "1234"
 }
