@@ -1,5 +1,5 @@
 
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const helper = require('./test_helper')
@@ -17,11 +17,6 @@ beforeEach(async () => {
     const personObject = helper.initialPersons.map(person => new Person(person))
     const promiseArray = personObject.map(person => person.save())
     await Promise.all(promiseArray)
-
-    // helper.initialPersons.forEach(async (person) => {
-    //     let personObject = new Person(person)
-    //     await personObject.save()
-    // })
 })
 
 test('persons are returned as json', async () => {
@@ -49,7 +44,8 @@ test('a valid person can be added ', async () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
   
-    const personsAtEnd = await helper.personsInDb()  
+    const personsAtEnd = await helper.personsInDb()
+      console.log(personsAtEnd)
     assert.strictEqual(personsAtEnd.length, helper.initialPersons.length + 1)
 
     const contents = personsAtEnd.map(n => n.name)  

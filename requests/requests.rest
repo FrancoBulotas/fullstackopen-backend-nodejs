@@ -12,10 +12,10 @@ content-type: application/json
     "number": "1923821938"
 }
 ###
-PUT http://localhost:3001/api/persons/6656902405ee21f20546c4c2 HTTP/1.1
+PUT http://localhost:3001/api/persons/665740d7e9e53bff6f7346cb HTTP/1.1
 content-type: application/json
 
 {
-    "name": "pe",
+    "name": "perez",
     "number": "1234"
 }

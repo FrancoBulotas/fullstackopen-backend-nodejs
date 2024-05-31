@@ -19,12 +19,6 @@ const getCurrentDate = () => {
     return  `${year}-${month}-${day} // ${hours}:${minutes}:${seconds}`;
 }
 
-
-// personRouter.get('/', (request, response) => {
-//   Person.find({}).then(persons => {
-//     response.json(persons)
-//   })
-// })
 personRouter.get('/', async (request, response) => {
   const persons = await Person.find({})
   response.json(persons) 
@@ -68,18 +62,23 @@ personRouter.post('/', async (request, response, next) => {
 
 })
 
-personRouter.put('/:id', (request, response, next) => {
+personRouter.put('/:id', async (request, response) => {
   const { name, number } = request.body
 
-  Person.findByIdAndUpdate(request.params.id, 
+  response.json(await Person.findByIdAndUpdate(request.params.id,
     { name, number },
     { new: true, runValidators: true, context: 'query' }
-    )
-  .then(updatedPerson => {
-    console.log(updatedPerson)
-    response.json(updatedPerson)
-  })
-  .catch(error => next(error))
+  ))
+
+  // Person.findByIdAndUpdate(request.params.id, 
+  //   { name, number },
+  //   { new: true, runValidators: true, context: 'query' }
+  //   )
+  // .then(updatedPerson => {
+  //   console.log(updatedPerson)
+  //   response.json(updatedPerson)
+  // })
+  // .catch(error => next(error))
 })
 
 module.exports = personRouter
